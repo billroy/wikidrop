@@ -15,7 +15,7 @@
     <div v-else>
         <pre>{{pagedata}}</pre>
         <button v-on:click='editPage'>edit this page</button>
-        <button v-on:click='loadPage()'>load another page</button>
+        <button v-on:click='gotoPage'>go to another page</button>
         <button v-on:click='newPage'>create a new page</button>
     </div>
 </div>
@@ -24,10 +24,9 @@
 var vm = new Vue({
     el: '#app',
     data: {
-        version: 10,
         pageid: 'start',
         pagedata: '...loading...',
-        last_pagedata: '',
+        saved_pagedata: '',
         editing: 0,
         domain: 'http://192.168.0.23'
     },
@@ -42,6 +41,7 @@ var vm = new Vue({
         },
         cancelEdit: function(event) {
             this.pagedata = this.saved_pagedata;
+            this.saved_pagedata = '';
             this.editing = 0;
         },
         newPage: function(event) {
@@ -52,7 +52,7 @@ var vm = new Vue({
             this.pagedata = '';
             this.editing = 1;
         },
-        loadPage: function() {
+        gotoPage: function() {
             var pageid = prompt('Page to load:')
             if (!pageid) return;
             this.pageid = pageid;
@@ -60,6 +60,7 @@ var vm = new Vue({
         },
         fetchPage: function() {
             console.log('fetching page ' + this.pageid);
+            this.pagedata = '...loading...';
             $.ajax({
                 type: 'GET',
                 url: this.domain + '/page/' + this.pageid,
@@ -81,6 +82,7 @@ var vm = new Vue({
                 data: this.pagedata,
                 success: function(data) {
                     console.log('posted page:', data);
+                    this.saved_pagedata = '';
                     vm.editing = 0;
                 },
                 error: function(xhr, type) {
