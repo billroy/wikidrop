@@ -13,38 +13,49 @@
 </div>
 
 <script>
-console.log('starting');
 var vm = new Vue({
     el: '#app',
     data: {
-        pageid: '1',
-        pagedata: '...edit this note and Save...',
+        version: 10,
+        pageid: 'start',
+        pagedata: '...loading...',
         domain: 'http://192.168.0.23'
     },
     created: function() {
-        console.log('vue up 2');
+        console.log('vue up...');
+        this.loadPage();
     },
     methods: {
         loadPage: function(event) {
             console.log('loading page ' + this.pageid);
-            console.log('http', this.$http);
             $.ajax({
                 type: 'GET',
                 url: this.domain + '/page/' + this.pageid,
                 success: function(data) {
-                    console.log('got page data:', data)
+                    console.log('got page data:', data);
                     vm.pagedata = data;
                 },
                 error: function(xhr, type) {
                     console.log('load error:', type);
+                    vm.pagedata = 'New page!';
                 }
-            })
+            });
         },
         savePage: function(event) {
-            console.log('saving page' + this.pageid);
+            console.log('saving page ' + this.pageid);
+            $.ajax({
+                type: 'POST',
+                url: this.domain + '/page/' + this.pageid,
+                data: this.pagedata,
+                success: function(data) {
+                    console.log('posted page:', data);
+                },
+                error: function(xhr, type) {
+                    console.log('post error:', type);
+                }
+            });
         }
     }
 });
-console.log('started');
 </script>
 </body></html>
