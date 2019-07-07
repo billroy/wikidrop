@@ -1,1 +1,50 @@
-hello world
+<!DOCTYPE html>
+<html><head>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://zeptojs.com/zepto.js"></script>
+</head><body>
+
+<div id="app">
+    <p>{{pageid}}<p>
+    <input v-model='pageid' placeholder='page id here'>
+    <textarea v-model='pagedata' placeholder='page data here'></textarea>
+    <button v-on:click='loadPage'>Load</button>
+    <button v-on:click='savePage'>Save</button>
+</div>
+
+<script>
+console.log('starting');
+var vm = new Vue({
+    el: '#app',
+    data: {
+        pageid: '1',
+        pagedata: '...edit this note and Save...',
+        domain: 'http://192.168.0.23'
+    },
+    created: function() {
+        console.log('vue up 2');
+    },
+    methods: {
+        loadPage: function(event) {
+            console.log('loading page ' + this.pageid);
+            console.log('http', this.$http);
+            $.ajax({
+                type: 'GET',
+                url: this.domain + '/page/' + this.pageid,
+                success: function(data) {
+                    console.log('got page data:', data)
+                    vm.pagedata = data;
+                },
+                error: function(xhr, type) {
+                    console.log('load error:', type);
+                }
+            })
+        },
+        savePage: function(event) {
+            console.log('saving page' + this.pageid);
+        }
+    }
+});
+console.log('started');
+</script>
+</body></html>

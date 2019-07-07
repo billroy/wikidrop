@@ -8,11 +8,11 @@ try:
 except:
     print("Please set up secrets.py")
 
-print("Connecting to WLAN...")
+print("Connecting to WLAN....")
 import network, os, time
 wlan = network.WLAN(network.STA_IF)
 wlan.active(True)
-wlan.connect('CheshireCat', 'candlebar-monkey')
+wlan.connect(secrets.secrets["ssid"], secrets.secrets["password"])
 while not wlan.isconnected():
     print(".")
     time.sleep_ms(500)
