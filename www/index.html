@@ -18,8 +18,12 @@ button {
     border-radius: 6px;
 }
 textarea {
+    font-size: 20px;
+    font-family: Courier;
     width: 100%;
     height: 100px;
+    color: white;
+    background-color: lightslategray;
 }
 .footer {
     font-size: 10px;
@@ -28,7 +32,7 @@ textarea {
 </style>
 
 <div id="app">
-    <h1><a :href='apphome'>{{appname}}:</a> {{pageid}}</h1>
+    <h1><a :href='apphome'>{{appname}}:</a> {{editing ? "editing page " : ""}}{{pageid}}</h1>
     <div v-if='editing'>
         <textarea id='editor' v-model='pagedata' placeholder='page data here'></textarea>
         <button v-on:click='cancelEdit'>discard changes</button>
@@ -121,7 +125,7 @@ var vm = new Vue({
             console.log('saving page ' + this.pageid);
             $.ajax({
                 type: 'POST',
-                url: this.domain + '/page/' + this.pageid,
+                url: document.location.origin + '/page/' + this.pageid,
                 data: this.pagedata,
                 success: function(data) {
                     console.log('posted page:', data);
