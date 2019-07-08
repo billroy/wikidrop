@@ -6,10 +6,13 @@
 </head><body>
 
 <style type='text/css'>
-body {
+body, a {
     font-family: Sans-Serif;
     color: white !important;
     background-color: darkslategray;
+}
+a {
+    text-decoration: none;
 }
 button {
     border-radius: 6px;
@@ -25,9 +28,8 @@ textarea {
 </style>
 
 <div id="app">
-    <h1>{{appname}}: {{pageid}}</h1>
+    <h1><a :href='apphome'>{{appname}}:</a> {{pageid}}</h1>
     <div v-if='editing'>
-        <!--input v-model='pageid' placeholder='page id here'-->
         <textarea id='editor' v-model='pagedata' placeholder='page data here'></textarea>
         <button v-on:click='cancelEdit'>discard changes</button>
         <button v-on:click='savePage'>save changes</button>
@@ -39,7 +41,7 @@ textarea {
         <button v-on:click='newPage'>create a new page</button>
     </div>
     <div id='footer' class='footer'>
-        <span>{{appname}} &copy; 2019 by Bill Roy</span>
+        <span><a href='https://github.com/billroy/wikidrop'>{{appname}}</a> &copy; 2019 by Bill Roy</span>
     </div>
 </div>
 
@@ -48,11 +50,11 @@ var vm = new Vue({
     el: '#app',
     data: {
         appname: 'wikidrop',
+        apphome: document.location.origin + '?pageid=start',
         pageid: 'start',
         pagedata: '...loading...',
         saved_pagedata: '',
-        editing: 0,
-        domain: 'http://192.168.0.23'
+        editing: 0
     },
     created: function() {
         console.log('vue up....');
@@ -102,7 +104,7 @@ var vm = new Vue({
             this.pagedata = '...loading...';
             $.ajax({
                 type: 'GET',
-                url: this.domain + '/page/' + this.pageid,
+                url: document.location.origin + '/page/' + this.pageid,
                 success: function(data) {
                     console.log('got page data:', data);
                     vm.pagedata = data;
