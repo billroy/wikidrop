@@ -8,15 +8,16 @@
 body {
     font-family: Sans-Serif;
     color: white !important;
-    background-color: darkblue;
+    background-color: darkslategray;
 }
 .footer {
     font-size: 10px;
+    margin: 1em 0 0 0;
 }
 </style>
 
 <div id="app">
-    <h1>wikidrop: {{pageid}}</h1>
+    <h1>{{appname}}: {{pageid}}</h1>
     <div v-if='editing'>
         <input v-model='pageid' placeholder='page id here'>
         <textarea v-model='pagedata' placeholder='page data here'></textarea>
@@ -29,15 +30,16 @@ body {
         <button v-on:click='gotoPage'>go to another page</button>
         <button v-on:click='newPage'>create a new page</button>
     </div>
-</div>
-<div id='footer' class='col-lg-12 footer'>
-    <center><span>wikidrop &copy; 2019 by Bill Roy</span></center>
+    <div id='footer' class='footer'>
+        <span>{{appname}} &copy; 2019 by Bill Roy</span>
+    </div>
 </div>
 
 <script>
 var vm = new Vue({
     el: '#app',
     data: {
+        appname: 'wikidrop',
         pageid: 'start',
         pagedata: '...loading...',
         saved_pagedata: '',
@@ -46,6 +48,9 @@ var vm = new Vue({
     },
     created: function() {
         console.log('vue up....');
+        var url = new URL(document.location.href);
+        var urlpage = url.searchParams.get('pageid');
+        if (urlpage != null) this.pageid = urlpage;
         this.fetchPage();
     },
     methods: {
