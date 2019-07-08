@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html><head>
+    <title>wikidrop</title>
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <script src="https://zeptojs.com/zepto.js"></script>
 </head><body>
@@ -10,6 +11,13 @@ body {
     color: white !important;
     background-color: darkslategray;
 }
+button {
+    border-radius: 6px;
+}
+textarea {
+    width: 100%;
+    height: 100px;
+}
 .footer {
     font-size: 10px;
     margin: 1em 0 0 0;
@@ -19,8 +27,8 @@ body {
 <div id="app">
     <h1>{{appname}}: {{pageid}}</h1>
     <div v-if='editing'>
-        <input v-model='pageid' placeholder='page id here'>
-        <textarea v-model='pagedata' placeholder='page data here'></textarea>
+        <!--input v-model='pageid' placeholder='page id here'-->
+        <textarea id='editor' v-model='pagedata' placeholder='page data here'></textarea>
         <button v-on:click='cancelEdit'>discard changes</button>
         <button v-on:click='savePage'>save changes</button>
     </div>
@@ -54,9 +62,20 @@ var vm = new Vue({
         this.fetchPage();
     },
     methods: {
+        setEditorHeight: function() {
+            var windowHeight = $(window).height();
+            var footer = $('#footer');
+            var editor = $('#editor');
+            var contentHeight = editor.position().top + footer.height();
+            var newEditorHeight = windowHeight - contentHeight;
+            $('#editor').height(newEditorHeight);
+        },
         editPage: function(event) {
             this.saved_pagedata = this.pagedata;
             this.editing = 1;
+            var self = this;
+            //setTimeout(500, function() { self.setEditorHeight(); } );
+            //this.setEditorHeight();
         },
         cancelEdit: function(event) {
             this.pagedata = this.saved_pagedata;
@@ -87,10 +106,12 @@ var vm = new Vue({
                 success: function(data) {
                     console.log('got page data:', data);
                     vm.pagedata = data;
+                    window.history.pushState({}, vm.appname, document.location.origin + '?pageid=' + vm.pageid);
                 },
                 error: function(xhr, type) {
                     console.log('load error:', type);
                     vm.pagedata = 'New page!';
+                    window.history.pushState({}, vm.appname, document.location.origin + '?pageid=' + vm.pageid);
                 }
             });
         },
