@@ -4,8 +4,19 @@
     <script src="https://zeptojs.com/zepto.js"></script>
 </head><body>
 
+<style type='text/css'>
+body {
+    font-family: Sans-Serif;
+    color: white !important;
+    background-color: darkblue;
+}
+.footer {
+    font-size: 10px;
+}
+</style>
+
 <div id="app">
-    <p>{{pageid}}<p>
+    <h1>wikidrop: {{pageid}}</h1>
     <div v-if='editing'>
         <input v-model='pageid' placeholder='page id here'>
         <textarea v-model='pagedata' placeholder='page data here'></textarea>
@@ -19,6 +30,9 @@
         <button v-on:click='newPage'>create a new page</button>
     </div>
 </div>
+<div id='footer' class='col-lg-12 footer'>
+    <center><span>wikidrop &copy; 2019 by Bill Roy</span></center>
+</div>
 
 <script>
 var vm = new Vue({
@@ -31,7 +45,7 @@ var vm = new Vue({
         domain: 'http://192.168.0.23'
     },
     created: function() {
-        console.log('vue up...');
+        console.log('vue up....');
         this.fetchPage();
     },
     methods: {
@@ -50,6 +64,7 @@ var vm = new Vue({
             this.pageid = pageid;
             console.log('new page ' + this.pageid);
             this.pagedata = '';
+            this.saved_pagedata = '';
             this.editing = 1;
         },
         gotoPage: function() {
@@ -82,7 +97,7 @@ var vm = new Vue({
                 data: this.pagedata,
                 success: function(data) {
                     console.log('posted page:', data);
-                    this.saved_pagedata = '';
+                    vm.saved_pagedata = '';
                     vm.editing = 0;
                 },
                 error: function(xhr, type) {

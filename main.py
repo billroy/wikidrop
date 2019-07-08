@@ -8,7 +8,7 @@ try:
 except:
     print("Please set up secrets.py")
 
-print("Connecting to WLAN....")
+print("Connecting to WLAN...")
 import network, os, time
 wlan = network.WLAN(network.STA_IF)
 wlan.active(True)
@@ -60,10 +60,10 @@ def handleList(httpClient, httpResponse, routeArgs=None):
     pages = str(os.listdir("/pages"))
     httpResponse.WriteResponseOk(content=pages)
 
-@MicroWebSrv.route("/", "GET")
-def handleIndex(httpClient, httpResponse, routeArgs=None):
-    print("GET /")
-    serveFile(httpResponse, 'www/index.html')
+#@MicroWebSrv.route("/", "GET")
+#def handleIndex(httpClient, httpResponse, routeArgs=None):
+#    print("GET /")
+#    serveFile(httpResponse, 'www/index.html')
 
 mws = MicroWebSrv(webPath="/www")  
 #mws.SetNotFoundPageUrl("http://" + wlan.ifconfig()[0] + "/index.html")
