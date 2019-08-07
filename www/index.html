@@ -7,7 +7,7 @@
 
 <style type='text/css'>
 body, a {
-    font-family: Sans-Serif;
+    font-family: American Typewriter, Sans-Serif;
     color: white !important;
     background-color: darkslategray;
 }
@@ -39,7 +39,7 @@ textarea {
         <button v-on:click='savePage'>save changes</button>
     </div>
     <div v-else>
-        <pre>{{pagedata}}</pre>
+        <pre v-on:click="handleContentClick($event);">{{pagedata}}</pre>
         <button v-on:click='editPage'>edit this page</button>
         <button v-on:click='gotoPage'>go to another page</button>
         <button v-on:click='newPage'>create a new page</button>
@@ -57,6 +57,7 @@ var vm = new Vue({
         apphome: document.location.origin + '?pageid=start',
         pageid: 'start',
         pagedata: '...loading...',
+        received_pagedata: '',
         saved_pagedata: '',
         editing: 0
     },
@@ -68,6 +69,30 @@ var vm = new Vue({
         this.fetchPage();
     },
     methods: {
+        wikifyLinks(text) {
+            var startPos = 0;
+            while ((startPos = text.indexOf('[[', startPos)) >= 0) {
+                var endPos = text.indexOf(']]', startPos+2);
+                if (endPos < 0) break;
+                console.log('hit:', startPos, endPos);
+                var pageId = text.substring(startPos+2, endPos);
+                console.log('got pageId:', pageId);
+                var markup = [
+                    '<a href="', document.location.origin, '/?pageid=', pageId, '">[[', pageId, ']]</a>' 
+                ].join('');
+                console.log('markup:', markup);
+                text = text.substring(0, startPos) + markup + text.substring(endPos+2, text.length);
+                startPos += markup.length;
+            }
+            console.log('wikifyLinks text output:', text);
+            return text;
+        },
+        handleContentClick(event) {
+            console.log('content click:', event);
+            var clickoffset = window.getSelection().focusOffset;
+            console.log('offset:', clickoffset);
+            console.log('char:', this.pagedata[clickoffset]);
+        },
         setEditorHeight: function() {
             var windowHeight = $(window).height();
             var footer = $('#footer');
@@ -79,7 +104,7 @@ var vm = new Vue({
         editPage: function(event) {
             this.saved_pagedata = this.pagedata;
             this.editing = 1;
-            var self = this;
+            //var self = this;
             //setTimeout(500, function() { self.setEditorHeight(); } );
             //this.setEditorHeight();
         },
@@ -111,6 +136,8 @@ var vm = new Vue({
                 url: document.location.origin + '/page/' + this.pageid,
                 success: function(data) {
                     console.log('got page data:', data);
+                    vm.received_pagedata = data;
+                    //vm.pagedata = vm.wikifyLinks(data);
                     vm.pagedata = data;
                     window.history.pushState({}, vm.appname, document.location.origin + '?pageid=' + vm.pageid);
                 },

@@ -8,6 +8,11 @@ try:
 except:
     print("Please set up secrets.py")
 
+#pagedir = '/flash/pages'
+#wwwdir = '/flash'
+pagedir = '/pages'
+wwwdir = '/www'
+
 print("Connecting to WLAN...")
 import network, os, time
 wlan = network.WLAN(network.STA_IF)
@@ -22,7 +27,7 @@ print("Configuring webserver...")
 from microWebSrv import MicroWebSrv
 
 def filenameFromPageID(pageid):
-    filename = "/pages/" + str(pageid) + ".txt"
+    filename = pagedir + "/" + str(pageid) + ".txt"
     return filename
 
 def serveFile(httpResponse, filename):
@@ -57,7 +62,7 @@ def handleUpdate(httpClient, httpResponse, routeArgs):
 @MicroWebSrv.route("/list", "GET")
 def handleList(httpClient, httpResponse, routeArgs=None):
     print("GET /list")
-    pages = str(os.listdir("/pages"))
+    pages = str(os.listdir(pagedir))
     httpResponse.WriteResponseOk(content=pages)
 
 #@MicroWebSrv.route("/", "GET")
@@ -65,7 +70,7 @@ def handleList(httpClient, httpResponse, routeArgs=None):
 #    print("GET /")
 #    serveFile(httpResponse, 'www/index.html')
 
-mws = MicroWebSrv(webPath="/www")  
+mws = MicroWebSrv(webPath=wwwdir)
 #mws.SetNotFoundPageUrl("http://" + wlan.ifconfig()[0] + "/index.html")
 mws.Start(threaded=True)                               # Starts server in a new thread
 print("Web server started...")

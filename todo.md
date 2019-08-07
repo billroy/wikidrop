@@ -1,7 +1,12 @@
 
 
-
 - server bug: list returns flat text with wrong mime type; should be JSON
+
+- full standalone operation
+    - js files in /www/
+        - consider dumping vue altogether for space
+    - set up access point
+    - DNS with captive portal config
 
 - make [[links]] work
 
@@ -13,18 +18,15 @@
     configurable on/off
 
 - save-changes password
-
+- keybindings
 - upgrade the editor to a wysiwyg component
 
 - try .pyhtml files
+    - bug: test file causes stack overflow abort
 
 - gitlab? or github?
 
-- full standalone operation
-    - js files in /www/
-    - set up access point
-    - mDNS broadcast
-    - DNS with captive portal config
+- for station mode: mDNS broadcast
 
 - power management
 

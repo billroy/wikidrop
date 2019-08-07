@@ -1,0 +1,8 @@
+<html><head></head><body>
+Test pyhtml file:
+{{py}}
+import os
+os.listdir()
+print('forty two')
+{{end}}
+</body></html>
